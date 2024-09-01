@@ -1,0 +1,19 @@
+name: Build and Publish image to Docker Hub
+on:
+  [workflow_dispatch]
+
+jobs:
+  publish_images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build image
+        run: |
+          docker build ./api/ -t meryembensalem/qr-code-api:latest
+          docker build ./front-end-nextjs/ -t meryembensalem/qr-code-front:latest
+      - name: push image to docker hub
+        run: |
+          docker login -u meryembensalem -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker push meryembensalem/qr-code-front:latest
+          docker push meryembensalem/qr-code-api:latest
